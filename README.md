@@ -10,6 +10,9 @@ Individual Exam Results: Displays individual exam results for each student, incl
 Contact Information: Includes contact information for feedback or information requests.
 
 Note: The names and IDs used in this report are randomly generated and do not relate to any individual. This report is for demonstration purposes only.
+
+Feel free to use and modify this reporting template for your own purposes. If you find it helpful, I encourage you to refer others to it as well.
+
 If you have any feedback or information requests, please contact me!
 
 Thank you!
