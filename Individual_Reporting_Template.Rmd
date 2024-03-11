@@ -51,8 +51,6 @@ Here you may find the repository of the work: [Eralda Gjika GitHub](https://gith
 A summary of your performance is enclosed. This report provides you information on subjects you were tested. First you will see the overall exam performance (table and graphs used). This information may be used to understand your position in the overall sample of students who took the exam.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(knitr)
 performance <- read_excel("Overall_performance.xlsx")
 
 DATA<-data.frame(performance)
@@ -158,37 +156,6 @@ print(exam_results_plot)
 ```
 
 
-```{r eval=FALSE, fig.cap="Comparison of Student's Result and Maximum Score by Subject", fig.height=6, fig.width=10, include=FALSE}
-
-# Filter data for the specified ID
-student_subject_scores <- Data_2 %>%
-  filter(ID == params$ID)
-
-# Get the subject columns from Data_2
-subject_columns <- names(student_subject_scores)[-(1:2)]  # Exclude first two columns (Name and ID)
-
-# Melt the data for easier merging
-student_subject_scores <- student_subject_scores %>%
-  pivot_longer(cols = subject_columns, names_to = "Subject", values_to = "Student_Score")
-
-# Merge with overall exam performance data
-student_subject_scores <- left_join(student_subject_scores, DATA, by = "Subject")
-
-# Create side-by-side bar chart
-bar_chart <- ggplot(student_subject_scores, aes(x = Subject)) +
-  geom_bar(aes(y = Student_Score, fill = "Student Score"), position = position_dodge(width = 0.9), stat = "identity") +
-  geom_bar(aes(y = Maximum.Scored, fill = "Maximum Score"), position = position_dodge(width = 0.9), stat = "identity") +
-  labs(title = paste("Comparison of Student's Result and Maximum Score by Subject for", params$Name, "(ID:", params$ID, ")"),
-       x = "Subject",
-       y = "Score") +
-  scale_fill_manual(values = c("Student Score" = "red", "Maximum Score" = "blue")) +  # Color bars differently
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
-
-print(bar_chart)
-
-
-```
 
 
 
