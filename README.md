@@ -19,11 +19,11 @@ Thank you!
 
 Instruction How to generate the reports:
 
-1) You will need a Script file and R Markdown file:
+You will need a (1) Script file and (2) R Markdown file:
 
 ![image](https://github.com/EGjika/Reporting-with-R-Markdown/assets/51511381/5090570f-3578-48af-b6b8-ae830a3ebd45)
 
-2) Also you will need two excel files:
+Also you will need two excel files:
 
 3) Overall performance.xlsx:
 
