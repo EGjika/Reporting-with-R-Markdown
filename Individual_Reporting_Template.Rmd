@@ -1,0 +1,194 @@
+---
+title: "Individual Summary Performance- Template"
+subtitle: "2024 Examination Seasson- High School"
+author: "Author: Eralda Gjika"
+output: pdf_document
+always_allow_html: true
+params:
+  Name: "Student name"
+  ID: "Student ID"
+header-includes:
+  - "\\usepackage{graphicx}"
+  - "\\usepackage{fancyhdr}"
+  - "\\pagestyle{fancy}"
+  - "\\fancyhead[L]{\\includegraphics[width=1cm]{UT_logo.png}}"
+---
+
+```{r include=FALSE}
+#This function will load or install libraries used if they are not already installed.
+## First specify the packages of interest
+
+packages = c("float", "readr","tibble", "crayon", 	"readxl", 	"ggplot2", "dplyr", "glue", "knitr", "tidyverse", "scales",	"gridExtra", "RColorBrewer", "kableExtra", "tinytex",	"rmarkdown",	"latticeExtra", "writexl", "purrr","tm","wordcloud","xtable","openxlsx"
+)
+
+## Now load or install&load all libraries necessary to work
+package.check <- lapply(
+  packages,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  }
+)
+```
+
+# Where to find the code?
+
+I am pleased to share with you the template of this report! Feel free to use and modify this reporting template for your own purposes. If you find it helpful, I encourage you to refer others to it as well.
+
+Here you may find the repository of the work: [Eralda Gjika GitHub](https://github.com/EGjika/Reporting-with-R-Markdown/tree/mai)
+
+
+# Exams Overall Performance
+
+**Student Name: `r params$Name`**
+
+**Student ID: `r format(params$ID,scientific=FALSE)`**
+
+
+
+A summary of your performance is enclosed. This report provides you information on subjects you were tested. First you will see the overall exam performance (table and graphs used). This information may be used to understand your position in the overall sample of students who took the exam.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+performance <- read_excel("Overall_performance.xlsx")
+
+DATA<-data.frame(performance)
+
+# Print the new table as a kable table with styling
+DATA %>% knitr::kable(format = "markdown",caption = "Overall Exam Performance by Subject") %>% kable_styling()
+
+```
+
+
+```{r echo=FALSE, fig.cap="Overall Exam Performance by Subject", fig.height=6, fig.width=13}
+
+# Convert Percentage of Pass to numeric if it's not already
+DATA$Percentage.of.Pass<- as.numeric(as.character(DATA$Percentage.of.Pass))
+
+# Create the bar plot for Percentage of Pass
+p1<-ggplot(DATA, aes(x = Subject, y = Percentage.of.Pass)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  geom_text(aes(label = paste0(Percentage.of.Pass, "%")), vjust = -0.5) +
+  labs(title = "Pass Rate",
+       x = "Subject",
+       y = "Pass Rate")
+
+# Create the bar plot for maximum possible score
+p2<-ggplot(DATA, aes(x = Subject, y = Maximum.Possible.Score)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  geom_text(aes(label = paste0(Maximum.Possible.Score)), vjust = -0.5) +
+  labs(title = "Maximum Possible Score",
+       x = "Subject",
+       y = "Maximum Possible")
+
+# Create the bar plot for maximum scored
+p3<-ggplot(DATA, aes(x = Subject, y = Maximum.Scored)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  geom_text(aes(label = paste0(Maximum.Scored)), vjust = -0.5) +
+  labs(title = "Maximum Scored",
+       x = "Subject",
+       y = "Maximum Scored")
+
+# Create a grid of charts
+grid.arrange(p1, p2, p3, ncol = 3)
+```
+
+
+\newpage
+
+# Individual results
+
+**Student Name: `r params$Name`**
+
+**Student ID: `r format(params$ID,scientific=FALSE)`**
+
+
+
+The overall pass score for every subject is 25. Your final score in each subject is shown in th table below. Please note, if you scored below 25, you did not pass the exam. Please refer to the overall exam results shown at the beginning for a better understanding of your performance in each of the subjects you were tested. If You do not see any of the results please contact your teacher for more detailed information. 
+
+
+The purpose of the feedback is to help you to understand your potential areas of weakness.
+
+\* Note: The names and IDs used in this report are randomly generated and do not relate to any individual.
+This report provides an overview of the high school performance based on the examination results. **Please note that the data presented here is for demonstration purposes only.**
+If you have any feedback or information requests, please [contact us](mailto:your_email@example.com)
+
+
+```{r echo=FALSE, fig.cap="Individual Exam Performance by Subject", fig.height=5, fig.width=4,message=FALSE, warning=FALSE}
+
+# Import the data for every student
+Data_2<-read_excel("Data_individual.xlsx")
+
+
+# Filter data for the specified ID
+student_data <- Data_2 %>%
+  filter(ID == params$ID)
+
+# Print individual exam results table
+exam_results_table <- student_data %>%
+  select(3:last_col()) %>%
+  gather(Subject, Result)
+
+# Convert to data frame if not already
+exam_results_table <- data.frame(exam_results_table)
+
+# Print the table
+exam_results_table %>%
+  knitr::kable(format = "markdown",
+               caption = paste("Individual Exam Results for", params$Name, "(ID:", params$ID, ")")) %>%
+  kable_styling()
+
+# Create bar chart for individual exam results
+exam_results_plot <- student_data %>%
+  select(3:last_col()) %>%
+  gather(Subject, Result) %>%
+  ggplot(aes(x = Subject, y = Result)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  geom_text(aes(label = Result), vjust = -0.5, color = "black", size = 3) +  # Display values on top of bars
+  labs(title = paste("Exam Results for", params$Name, "(ID:", params$ID, ")"),
+       x = "Subject",
+       y = "Result") +
+  theme_minimal()
+
+print(exam_results_plot)
+
+```
+
+
+```{r eval=FALSE, fig.cap="Comparison of Student's Result and Maximum Score by Subject", fig.height=6, fig.width=10, include=FALSE}
+
+# Filter data for the specified ID
+student_subject_scores <- Data_2 %>%
+  filter(ID == params$ID)
+
+# Get the subject columns from Data_2
+subject_columns <- names(student_subject_scores)[-(1:2)]  # Exclude first two columns (Name and ID)
+
+# Melt the data for easier merging
+student_subject_scores <- student_subject_scores %>%
+  pivot_longer(cols = subject_columns, names_to = "Subject", values_to = "Student_Score")
+
+# Merge with overall exam performance data
+student_subject_scores <- left_join(student_subject_scores, DATA, by = "Subject")
+
+# Create side-by-side bar chart
+bar_chart <- ggplot(student_subject_scores, aes(x = Subject)) +
+  geom_bar(aes(y = Student_Score, fill = "Student Score"), position = position_dodge(width = 0.9), stat = "identity") +
+  geom_bar(aes(y = Maximum.Scored, fill = "Maximum Score"), position = position_dodge(width = 0.9), stat = "identity") +
+  labs(title = paste("Comparison of Student's Result and Maximum Score by Subject for", params$Name, "(ID:", params$ID, ")"),
+       x = "Subject",
+       y = "Score") +
+  scale_fill_manual(values = c("Student Score" = "red", "Maximum Score" = "blue")) +  # Color bars differently
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+print(bar_chart)
+
+
+```
+
+
+
